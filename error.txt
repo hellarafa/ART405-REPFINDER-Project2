@@ -1,0 +1,13 @@
+{
+ "error": {
+  "errors": [
+   {
+    "domain": "global",
+    "reason": "required",
+    "message": "No address provided"
+   }
+  ],
+  "code": 400,
+  "message": "No address provided"
+ }
+}
