@@ -1,5 +1,9 @@
-<?php $show_modal = false; ?>
-
+<?php 
+    $show_modal = false;
+    //debug stuff
+    //ini_set('display_errors', 'On');
+    //error_reporting(E_ALL | E_STRICT);
+ ?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -9,8 +13,9 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Dosis:400,600" rel="stylesheet">     
+    <script src="https://use.fontawesome.com/7ef7608cc6.js"></script>
+
   </head>
   <body>
   <nav class="navbar navbar-toggleable-md navbar-light navbar-inverse bg-blue" id="top">
@@ -30,8 +35,8 @@
     </div>
   </nav>
 <div class="jumbotron jumbotron-fluid">
-  <div class="container">
-    <h1 class="display-3">Welcome to Repfinder.</h1>
+  <div class="container text-center">
+    <h1 class="display-3 ">Welcome to Repfinder.</h1>
     <p class="lead">Have you ever sent a letter to your senator? What about your state legislators or even the mayor of your town? Their contact information is scattered throughout the web on various official and unofficial websites. Our website helps you find all the government representatives for an address. Stay informed.</p>
   </div>
 </div>
@@ -64,12 +69,9 @@
     $searchaddress = $_POST['searchaddress']; 
     $searchaddress_final = str_replace(' ', '%20', $searchaddress);
   }
-  else {
-    //$searchaddress = '18111 Nordhoff St. Northridge CA'; 
-    //$searchaddress_final = '18111%20Nordhoff%20St.%20Northridge%20CA'; 
-  }
   $data = json_decode(file_get_contents('https://www.googleapis.com/civicinfo/v2/representatives?key=AIzaSyA2oUu1o-zH4MvJkIrxZ1-imss5gH_P_cI&address='.$searchaddress_final));  
 
+  //modal trigger
   if (isset($_POST['firsttime'])){
     $check = count($data);
     if ($check == 0) {
@@ -88,7 +90,7 @@
     }
   }
   $i = 0;
-  echo '<div class="container-fluid">';
+  echo '<div class="bg-grey container-fluid">';
   $list = count($jobs);//list counts how many results came back from Google
     if($list>0){
       echo '<br><h2 class="text-center display-3">This is who represents you:</h2><br>';
@@ -98,24 +100,57 @@
       echo '<div class="container">';
       echo '<div class="card-columns">';
     }
+
   foreach ($data->officials as $person) {
-    //$searchaddress_final = str_replace(' ', '%20', $searchaddress);
+    //create card 
     echo '<div class="card text-center reveal-1">';  
+    //photo
     echo '<div class="card-header">'.(isset($person->party)? $person->party :'Not Listed').'</div>';
-    echo '<img src="'.(isset($person->photoUrl)? $person->photoUrl : 'http://placehold.it/360x250?text=Not+Available').'" class="img-fluid border-0 mx-auto card-img-top">';
+    echo '<img class="img-fluid card-img-top" src="'.(isset($person->photoUrl)? $person->photoUrl : 'http://placehold.it/360x250?text=Not+Available').'">';
+    //name
     echo '<div class="card-block">';
     echo '<h4 class="card-title">'.$person->name.'</h4>';
+    //role
     echo '<h6 class="card-subtitle mb-2 text-muted">'.$jobs[$i].'</h6></div>';
-    //echo '<p class="card-text"> City: '.$person->address[0]->city.'</p>';
     echo '<ul class="list-group list-group-flush">';
-    echo '<li class="list-group-item">City: '.(isset($person->address[0]->city)? $person->address[0]->city :'Not Listed').'</li>';
-    echo '<li class="list-group-item">Phone: '.(isset($person->phones[0])? $person->phones[0] :'Not Listed').'</li>';
-    echo ''.(isset($person->emails[0])? '<li class="list-group-item">Email: '.$person->emails[0].'</li>' :'').'';
+    //address
+    echo '<li class="list-group-item text-left">Address: '.(isset($person->address[0]->line1)? $person->address[0]->line1 :'Not Listed').'
+    <br>City: '.(isset($person->address[0]->city)? $person->address[0]->city :'Not Listed').'
+    <br>State: '.(isset($person->address[0]->state)? $person->address[0]->state :'Not Listed').'
+    <br>Zip: '.(isset($person->address[0]->zip)? $person->address[0]->zip :'Not Listed').'</li>';
+    //phone number
+    echo '<li class="list-group-item"><i class="fa fa-phone" aria-hidden="true"></i>
+&nbsp;Phone: '.(isset($person->phones[0])? $person->phones[0] :'Not Listed').'</li>';
+    //email, if any
+    echo ''.(isset($person->emails[0])? '<li class="list-group-item"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email: <a href="mailto:'.$person->emails[0].'">'.$person->emails[0].'</a></li>' :'').'';
+    //social media
+    get_social($person);
     echo '</ul>';
+    //website
     echo '<div class="card-block">';
     echo '<a href="'.$person->urls[0].'" class="card-link">Website</a></div>';
     echo '</div>';
     $i++;
+  }
+  function get_social($person){
+    foreach ($person->channels as $media){
+      //echo $media->type;
+      if ($media->type == "Facebook"){
+        echo '<li class="list-group-item text-center"><a href="http://www.facebook.com/'.$media->id.'"><i class="fa fa-facebook" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
+      }
+      elseif ($media->type == "Twitter"){
+        echo '<li class="list-group-item"><a href="http://www.twitter.com/'.$media->id.'"><i class="fa fa-twitter" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
+      }
+      elseif ($media->type == "YouTube"){
+        echo '<li class="list-group-item"><a href="http://www.youtube.com/'.$media->id.'"><i class="fa fa-youtube" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
+      }
+      elseif ($media->type == "GooglePlus"){
+        echo '<li class="list-group-item"><a href="http://plus.google.com/'.$media->id.'"><i class="fa fa-google-plus" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
+      }
+      else {
+        //no-media
+      }
+    }
   }
 ?>
     </div> <!--close card-columns-->
@@ -146,11 +181,10 @@
 </div>
 
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="../bower_components/scrollreveal/dist/scrollreveal.js"></script>
-    <script src="js/smooth.js"></script>
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="js/bootstrap.min.js"></script> 
+    <!--script src="../bower_components/scrollreveal/dist/scrollreveal.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-    <script src="js/bootstrap.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script> -->
   </body>
 </html>

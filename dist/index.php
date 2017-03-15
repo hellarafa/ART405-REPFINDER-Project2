@@ -1,5 +1,9 @@
-<?php $show_modal = false; ?>
-
+<?php 
+    $show_modal = false;
+    //debug stuff
+    //ini_set('display_errors', 'On');
+    //error_reporting(E_ALL | E_STRICT);
+ ?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -9,11 +13,16 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Dosis:400,600" rel="stylesheet">  
+    <script src="../bower_components/scrollreveal/dist/scrollreveal.js"></script>   
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://use.fontawesome.com/7ef7608cc6.js"></script>
-  </head>
-  <body>
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/startreveal.js"></script>
+</head>
+<body>
   <nav class="navbar navbar-toggleable-md navbar-light navbar-inverse bg-blue" id="top">
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -33,7 +42,7 @@
 <div class="jumbotron jumbotron-fluid">
   <div class="container text-center">
     <h1 class="display-3 ">Welcome to Repfinder.</h1>
-    <p class="lead">Have you ever sent a letter to your senator? What about your state legislators or even the mayor of your town? Their contact information is scattered throughout the web on various official and unofficial websites. Our website helps you find all the government representatives for an address. Stay informed.</p>
+    <p class="lead">Have you ever sent a letter to your senator? What about your state legislators or even the mayor of your town? Their contact information is scattered throughout the web on various official and unofficial websites. This website helps you find all your government representatives for any address. Stay informed.</p>
   </div>
 </div>
 
@@ -65,12 +74,9 @@
     $searchaddress = $_POST['searchaddress']; 
     $searchaddress_final = str_replace(' ', '%20', $searchaddress);
   }
-  else {
-    //$searchaddress = '18111 Nordhoff St. Northridge CA'; 
-    //$searchaddress_final = '18111%20Nordhoff%20St.%20Northridge%20CA'; 
-  }
   $data = json_decode(file_get_contents('https://www.googleapis.com/civicinfo/v2/representatives?key=AIzaSyA2oUu1o-zH4MvJkIrxZ1-imss5gH_P_cI&address='.$searchaddress_final));  
 
+  //modal trigger
   if (isset($_POST['firsttime'])){
     $check = count($data);
     if ($check == 0) {
@@ -89,7 +95,7 @@
     }
   }
   $i = 0;
-  echo '<div class="container-fluid">';
+  echo '<div class="bg-grey container-fluid">';
   $list = count($jobs);//list counts how many results came back from Google
     if($list>0){
       echo '<br><h2 class="text-center display-3">This is who represents you:</h2><br>';
@@ -105,7 +111,7 @@
     echo '<div class="card text-center reveal-1">';  
     //photo
     echo '<div class="card-header">'.(isset($person->party)? $person->party :'Not Listed').'</div>';
-    echo '<img class="img-fluid card-img-top" src="'.(isset($person->photoUrl)? $person->photoUrl : 'http://placehold.it/360x250?text=Not+Available').'">';
+    echo '<img class="img-fluid card-img-top" src="'.(isset($person->photoUrl)? $person->photoUrl : 'http://placehold.it/360x200/2196F3/ffffff?text=Not+Available').'">';
     //name
     echo '<div class="card-block">';
     echo '<h4 class="card-title">'.$person->name.'</h4>';
@@ -119,7 +125,7 @@
     <br>Zip: '.(isset($person->address[0]->zip)? $person->address[0]->zip :'Not Listed').'</li>';
     //phone number
     echo '<li class="list-group-item"><i class="fa fa-phone" aria-hidden="true"></i>
-&nbsp;Phone: '.(isset($person->phones[0])? $person->phones[0] :'Not Listed').'</li>';
+&nbsp;Phone: '.(isset($person->phones[0])? call_phone($person->phones[0]) :'Not Listed').'</li>';
     //email, if any
     echo ''.(isset($person->emails[0])? '<li class="list-group-item"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email: <a href="mailto:'.$person->emails[0].'">'.$person->emails[0].'</a></li>' :'').'';
     //social media
@@ -131,11 +137,16 @@
     echo '</div>';
     $i++;
   }
+  function call_phone($person){
+    $number = $person;
+    $hidenumber = preg_replace('/[^0-9]/', '', $number);
+    return '<a href="tel:'.$hidenumber.'">'.$number.'</a>';
+  }
   function get_social($person){
     foreach ($person->channels as $media){
       //echo $media->type;
       if ($media->type == "Facebook"){
-        echo '<li class="list-group-item"><a href="http://www.facebook.com/'.$media->id.'"><i class="fa fa-facebook" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
+        echo '<li class="list-group-item text-center"><a href="http://www.facebook.com/'.$media->id.'"><i class="fa fa-facebook" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
       }
       elseif ($media->type == "Twitter"){
         echo '<li class="list-group-item"><a href="http://www.twitter.com/'.$media->id.'"><i class="fa fa-twitter" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
@@ -150,9 +161,7 @@
         //no-media
       }
     }
-    //echo "<h4>".$person->channels[0]->type."</h4>";
   }
-
 ?>
     </div> <!--close card-columns-->
   </div> <!--close container-->
@@ -167,26 +176,24 @@
 </footer> <!--close footer-->
 
 <?php if($show_modal):?>
-<script>$(document).ready(function(){$("#pModal").modal("show");});</script>
+<script>
+$(document).ready(function(){$("#pModal").modal("show");});
+</script>
 <?php endif;?>
 
-<div class="modal fade" id="pModal" tabindex="-1" role="dialog" aria-labelledby="pModalLabel">
-  <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header alert-warning">
-          <h4 class="modal-title" id="pModalLabel">Error: Wrong Address</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        </div>
+    <div class="modal fade" id="pModal" tabindex="-1" role="dialog" aria-labelledby="pModalLabel">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header alert-warning">
+              <h4 class="modal-title" id="pModalLabel">Error: Wrong Address</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+          </div>
       </div>
-  </div>
-</div>
-
-    <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="../bower_components/scrollreveal/dist/scrollreveal.js"></script>
-    <script src="js/smooth.js"></script>
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-    <script src="js/bootstrap.js"></script>
+    </div>
+<script>
+window.sr = ScrollReveal();
+sr.reveal('.reveal-1');
+</script>
   </body>
 </html>

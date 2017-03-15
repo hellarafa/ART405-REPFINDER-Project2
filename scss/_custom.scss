@@ -19,27 +19,25 @@ $font-family-base:       $font-family-serif;
 $blue: #2196F3;
 $red: #f44336;
 $grey400: #bdbdbd;
+$grey100: #eceff1;
+$grey: #eceff1;
 $jumbotron-padding: 7rem;
-
-
 
 // Custom Classes
 //
 // My custom classes go below here.
 
 //Custom Backgrounds
-html {
-  background-color: $grey440;
+.bg-grey {
+  background-color: $grey100;
 }
 p {
   margin-bottom: 0rem !important;
 }
-
 .bg-blue { 
 	background-color: $blue;
   color: white;
 }
-
 .bg-red {
   background-color: $red;
 }
@@ -48,9 +46,11 @@ p {
 }
 .photos {
   width: 12em;
-  height;
 }
-.card-columns {
+.thicker {
+    font-weight: 600;
+}
+/*.card-columns {
   @include media-breakpoint-only(lg) {
     column-count: 4;
   }
@@ -65,13 +65,12 @@ p {
   @include media-breakpoint-only(xl) {
     column-count: 5;
   }
-}
+} */
 .jumbotron {
   padding: $jumbotron-padding ($jumbotron-padding / 2) !important; 
 	background-image: url("./img/capitol.png");
 	background-repeat: no-repeat;
   background-position: center;
-
   color: white;
   margin-bottom: 2rem !important;
   margin: 0px 0px 0px 0px;
@@ -100,9 +99,9 @@ footer {
 //https://scotch.io/tutorials/google-material-design-input-boxes-in-css3#update!-no-js-necessary!
 //
 
-input {
+//input {
   //margin-top: 10% !important;
-}
+//}
 
 /*
 input {
