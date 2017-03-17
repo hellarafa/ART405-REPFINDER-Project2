@@ -3,15 +3,23 @@
 // Copy variables from `_variables.scss` to this file to override default values
 // without modifying source files.
 
+@mixin shadow($level: 1) {
+  @if $level == 1 {box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);} 
+  @else if $level == 2 {box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);}
+  @else if $level == 3 {box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);}
+  @else if $level == 4 {box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);}
+  @else if $level == 5 {box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);}
+}
+
 // Fonts
 //
 // Font, line-height, and color for body text, headings, and more.
-
 $font-family-sans-serif: 'Dosis', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-$font-family-serif:		'Dosis' , Georgia, "Times New Roman", Times, serif;
+$font-family-serif:		'Dosis', Roboto, Georgia, "Times New Roman", Times, serif;
 $font-family-google: Roboto, "Helvetica Neue";
 $font-family-monospace:  Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 $font-family-base:       $font-family-serif;
+
 
 // Colors
 //
@@ -22,6 +30,7 @@ $grey400: #bdbdbd;
 $grey100: #eceff1;
 $grey: #eceff1;
 $jumbotron-padding: 7rem;
+$padding: 100px;
 
 // Custom Classes
 //
@@ -50,6 +59,13 @@ p {
 .thicker {
     font-weight: 600;
 }
+.card-img-top {
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: top; 
+  height: 300px !important;
+  overflow: hidden;
+}
 /*.card-columns {
   @include media-breakpoint-only(lg) {
     column-count: 4;
@@ -74,12 +90,14 @@ p {
   color: white;
   margin-bottom: 2rem !important;
   margin: 0px 0px 0px 0px;
+  @include shadow(2);
 }
 
 .bigger-box {
   padding-top: 60px;
   padding-bottom: 60px;
   margin-top: -32px;
+  @include shadow(2);
 }
 
 .bd-footer {
@@ -95,6 +113,19 @@ footer {
   bottom: 0 !important;
 }
 
+.card {
+  transition:all 550ms;
+  @include shadow(1);
+  &:hover,&:focus {
+    @include shadow(3);
+    transform:translateY(-5px);
+  }
+  &:active {
+    @include shadow(2);
+    transform:translateY(-2px);
+  }
+} 
+
 //custom form stylings to make them look like google
 //https://scotch.io/tutorials/google-material-design-input-boxes-in-css3#update!-no-js-necessary!
 //
@@ -103,12 +134,13 @@ footer {
   //margin-top: 10% !important;
 //}
 
-/*
+
 input {
   font-size:18px;
   padding:20px 10px 10px 5px;
   display:block;
   width:300px;
+  color: white;
   background-color: $blue;
   border:none;
   border-bottom:1px solid $grey400;
@@ -121,6 +153,7 @@ input:focus ~ label, input:valid ~ label     {
   font-size:14px;
   color:#5264AE;
 }
+/*
 .group { 
   position:relative; 
   margin-bottom:45px; 

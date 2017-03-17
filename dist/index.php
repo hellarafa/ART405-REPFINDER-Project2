@@ -111,7 +111,8 @@
     echo '<div class="card text-center reveal-1">';  
     //photo
     echo '<div class="card-header">'.(isset($person->party)? $person->party :'Not Listed').'</div>';
-    echo '<img class="img-fluid card-img-top" src="'.(isset($person->photoUrl)? $person->photoUrl : 'http://placehold.it/360x200/2196F3/ffffff?text=Not+Available').'">';
+    //echo '<img class="img-fluid card-img-top" src="'.(isset($person->photoUrl)? $person->photoUrl : 'http://placehold.it/360x200/2196F3/ffffff?text=Not+Available').'">';
+    echo '<div class="card-img-top" style="background-image: url('.(isset($person->photoUrl)? $person->photoUrl : 'http://placehold.it/360x300/2196F3/ffffff?text=Not+Available').');"></div>';
     //name
     echo '<div class="card-block">';
     echo '<h4 class="card-title">'.$person->name.'</h4>';
@@ -125,15 +126,15 @@
     <br>Zip: '.(isset($person->address[0]->zip)? $person->address[0]->zip :'Not Listed').'</li>';
     //phone number
     echo '<li class="list-group-item"><i class="fa fa-phone" aria-hidden="true"></i>
-&nbsp;Phone: '.(isset($person->phones[0])? call_phone($person->phones[0]) :'Not Listed').'</li>';
+&nbsp;Phone: &nbsp;'.(isset($person->phones[0])? call_phone($person->phones[0]) :'Not Listed').'</li>';
     //email, if any
-    echo ''.(isset($person->emails[0])? '<li class="list-group-item"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email: <a href="mailto:'.$person->emails[0].'">'.$person->emails[0].'</a></li>' :'').'';
+    echo ''.(isset($person->emails[0])? '<li class="list-group-item"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email: &nbsp;<a href="mailto:'.$person->emails[0].'">'.$person->emails[0].'</a></li>' :'').'';
     //social media
     get_social($person);
     echo '</ul>';
     //website
     echo '<div class="card-block">';
-    echo '<a href="'.$person->urls[0].'" class="card-link">Website</a></div>';
+    echo '<a href="'.$person->urls[0].'" class="card-link" target="_blank">Website</a></div>';
     echo '</div>';
     $i++;
   }
@@ -146,16 +147,16 @@
     foreach ($person->channels as $media){
       //echo $media->type;
       if ($media->type == "Facebook"){
-        echo '<li class="list-group-item text-center"><a href="http://www.facebook.com/'.$media->id.'"><i class="fa fa-facebook" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
+        echo '<li class="list-group-item text-center"><a href="http://www.facebook.com/'.$media->id.'" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
       }
       elseif ($media->type == "Twitter"){
-        echo '<li class="list-group-item"><a href="http://www.twitter.com/'.$media->id.'"><i class="fa fa-twitter" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
+        echo '<li class="list-group-item"><a href="http://www.twitter.com/'.$media->id.'" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
       }
       elseif ($media->type == "YouTube"){
-        echo '<li class="list-group-item"><a href="http://www.youtube.com/'.$media->id.'"><i class="fa fa-youtube" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
+        echo '<li class="list-group-item"><a href="http://www.youtube.com/'.$media->id.'" target="_blank"><i class="fa fa-youtube" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
       }
       elseif ($media->type == "GooglePlus"){
-        echo '<li class="list-group-item"><a href="http://plus.google.com/'.$media->id.'"><i class="fa fa-google-plus" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
+        echo '<li class="list-group-item"><a href="http://plus.google.com/'.$media->id.'" target="_blank"><i class="fa fa-google-plus" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
       }
       else {
         //no-media

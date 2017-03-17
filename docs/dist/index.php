@@ -13,11 +13,16 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Dosis:400,600" rel="stylesheet">     
+    <link href="https://fonts.googleapis.com/css?family=Dosis:400,600" rel="stylesheet">  
+    <script src="../bower_components/scrollreveal/dist/scrollreveal.js"></script>   
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://use.fontawesome.com/7ef7608cc6.js"></script>
-
-  </head>
-  <body>
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/startreveal.js"></script>
+</head>
+<body>
   <nav class="navbar navbar-toggleable-md navbar-light navbar-inverse bg-blue" id="top">
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -37,7 +42,7 @@
 <div class="jumbotron jumbotron-fluid">
   <div class="container text-center">
     <h1 class="display-3 ">Welcome to Repfinder.</h1>
-    <p class="lead">Have you ever sent a letter to your senator? What about your state legislators or even the mayor of your town? Their contact information is scattered throughout the web on various official and unofficial websites. Our website helps you find all the government representatives for an address. Stay informed.</p>
+    <p class="lead">Have you ever sent a letter to your senator? What about your state legislators or even the mayor of your town? Their contact information is scattered throughout the web on various official and unofficial websites. This website helps you find all your government representatives for any address. Stay informed.</p>
   </div>
 </div>
 
@@ -106,7 +111,8 @@
     echo '<div class="card text-center reveal-1">';  
     //photo
     echo '<div class="card-header">'.(isset($person->party)? $person->party :'Not Listed').'</div>';
-    echo '<img class="img-fluid card-img-top" src="'.(isset($person->photoUrl)? $person->photoUrl : 'http://placehold.it/360x250?text=Not+Available').'">';
+    //echo '<img class="img-fluid card-img-top" src="'.(isset($person->photoUrl)? $person->photoUrl : 'http://placehold.it/360x200/2196F3/ffffff?text=Not+Available').'">';
+    echo '<div class="card-img-top" style="background-image: url('.(isset($person->photoUrl)? $person->photoUrl : 'http://placehold.it/360x300/2196F3/ffffff?text=Not+Available').');"></div>';
     //name
     echo '<div class="card-block">';
     echo '<h4 class="card-title">'.$person->name.'</h4>';
@@ -120,7 +126,7 @@
     <br>Zip: '.(isset($person->address[0]->zip)? $person->address[0]->zip :'Not Listed').'</li>';
     //phone number
     echo '<li class="list-group-item"><i class="fa fa-phone" aria-hidden="true"></i>
-&nbsp;Phone: '.(isset($person->phones[0])? $person->phones[0] :'Not Listed').'</li>';
+&nbsp;Phone: '.(isset($person->phones[0])? call_phone($person->phones[0]) :'Not Listed').'</li>';
     //email, if any
     echo ''.(isset($person->emails[0])? '<li class="list-group-item"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email: <a href="mailto:'.$person->emails[0].'">'.$person->emails[0].'</a></li>' :'').'';
     //social media
@@ -128,24 +134,29 @@
     echo '</ul>';
     //website
     echo '<div class="card-block">';
-    echo '<a href="'.$person->urls[0].'" class="card-link">Website</a></div>';
+    echo '<a href="'.$person->urls[0].'" class="card-link" target="_blank">Website</a></div>';
     echo '</div>';
     $i++;
+  }
+  function call_phone($person){
+    $number = $person;
+    $hidenumber = preg_replace('/[^0-9]/', '', $number);
+    return '<a href="tel:'.$hidenumber.'">'.$number.'</a>';
   }
   function get_social($person){
     foreach ($person->channels as $media){
       //echo $media->type;
       if ($media->type == "Facebook"){
-        echo '<li class="list-group-item text-center"><a href="http://www.facebook.com/'.$media->id.'"><i class="fa fa-facebook" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
+        echo '<li class="list-group-item text-center"><a href="http://www.facebook.com/'.$media->id.'" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
       }
       elseif ($media->type == "Twitter"){
-        echo '<li class="list-group-item"><a href="http://www.twitter.com/'.$media->id.'"><i class="fa fa-twitter" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
+        echo '<li class="list-group-item"><a href="http://www.twitter.com/'.$media->id.'" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
       }
       elseif ($media->type == "YouTube"){
-        echo '<li class="list-group-item"><a href="http://www.youtube.com/'.$media->id.'"><i class="fa fa-youtube" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
+        echo '<li class="list-group-item"><a href="http://www.youtube.com/'.$media->id.'" target="_blank"><i class="fa fa-youtube" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
       }
       elseif ($media->type == "GooglePlus"){
-        echo '<li class="list-group-item"><a href="http://plus.google.com/'.$media->id.'"><i class="fa fa-google-plus" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
+        echo '<li class="list-group-item"><a href="http://plus.google.com/'.$media->id.'" target="_blank"><i class="fa fa-google-plus" aria-hidden="true"></i>&nbsp;'.$media->id.'</a></li>';
       }
       else {
         //no-media
@@ -166,25 +177,24 @@
 </footer> <!--close footer-->
 
 <?php if($show_modal):?>
-<script>$(document).ready(function(){$("#pModal").modal("show");});</script>
+<script>
+$(document).ready(function(){$("#pModal").modal("show");});
+</script>
 <?php endif;?>
 
-<div class="modal fade" id="pModal" tabindex="-1" role="dialog" aria-labelledby="pModalLabel">
-  <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header alert-warning">
-          <h4 class="modal-title" id="pModalLabel">Error: Wrong Address</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        </div>
+    <div class="modal fade" id="pModal" tabindex="-1" role="dialog" aria-labelledby="pModalLabel">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header alert-warning">
+              <h4 class="modal-title" id="pModalLabel">Error: Wrong Address</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+          </div>
       </div>
-  </div>
-</div>
-
-    <!-- jQuery first, then Tether, then Bootstrap JS. -->
-    <script src="js/bootstrap.min.js"></script> 
-    <!--script src="../bower_components/scrollreveal/dist/scrollreveal.js"></script>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script> -->
+    </div>
+<script>
+window.sr = ScrollReveal();
+sr.reveal('.reveal-1');
+</script>
   </body>
 </html>
