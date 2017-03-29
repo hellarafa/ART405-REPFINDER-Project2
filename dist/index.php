@@ -13,6 +13,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/animate.css">
     <link href="https://fonts.googleapis.com/css?family=Dosis:400,600" rel="stylesheet">  
     <script src="../bower_components/scrollreveal/dist/scrollreveal.js"></script>   
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -20,7 +21,7 @@
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="js/bootstrap.js"></script>
-    <script src="js/startreveal.js"></script>
+    <script src="js/smooth-scroll.js"></script>
 </head>
 <body>
   <nav class="navbar navbar-toggleable-md navbar-light navbar-inverse bg-blue" id="top">
@@ -34,14 +35,14 @@
           <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#search">Search</a>
+          <a class="nav-link" data-scroll href="#search">Search</a>
         </li>
       </ul>
     </div>
   </nav>
 <div class="jumbotron jumbotron-fluid">
   <div class="container text-center">
-    <h1 class="display-3 ">Welcome to Repfinder.</h1>
+    <h1 class="display-3">Welcome to Repfinder.</h1>
     <p class="lead">Have you ever sent a letter to your senator? What about your state legislators or even the mayor of your town? Their contact information is scattered throughout the web on various official and unofficial websites. This website helps you find all your government representatives for any address. Stay informed.</p>
   </div>
 </div>
@@ -50,7 +51,7 @@
   <div class="container-fluid bg-blue bigger-box">
     <div class="row">
       <div class="col-lg-4 offset-lg-2 text-center">
-        <h1 class="display-4">Enter your Address: </h1>
+        <h1 class="display-4 animated pulse">Enter your Address: </h1>
       </div>
       <div class="col-lg-4 text-center align-middle">
 
@@ -95,10 +96,16 @@
     }
   }
   $i = 0;
-  echo '<div class="bg-grey container-fluid">';
+  echo '<div class="bg-grey container-fluid shadow1">';
   $list = count($jobs);//list counts how many results came back from Google
     if($list>0){
-      echo '<br><h2 class="text-center display-3">This is who represents you:</h2><br>';
+      echo '<br><h2 class="text-center display-3 animated zoomInUp" id="represent">This is who represents you:</h2><br>';
+        echo "<script>";
+        echo "var anchor = document.querySelector( '#represent' );
+              var toggle = document.querySelector('#toggle');
+              var options = { speed: 1000 };
+              smoothScroll.animateScroll( anchor, toggle, options );";
+        echo "</script>";
       echo '<div class="container">';
       echo '<div class="card-columns ">';
     } else {
@@ -195,6 +202,7 @@ $(document).ready(function(){$("#pModal").modal("show");});
 <script>
 window.sr = ScrollReveal();
 sr.reveal('.reveal-1');
+smoothScroll.init();
 </script>
   </body>
 </html>

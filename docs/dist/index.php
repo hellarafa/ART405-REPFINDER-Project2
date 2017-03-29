@@ -95,7 +95,7 @@
     }
   }
   $i = 0;
-  echo '<div class="bg-grey container-fluid">';
+  echo '<div class="bg-grey container-fluid shadow1">';
   $list = count($jobs);//list counts how many results came back from Google
     if($list>0){
       echo '<br><h2 class="text-center display-3">This is who represents you:</h2><br>';
@@ -126,9 +126,9 @@
     <br>Zip: '.(isset($person->address[0]->zip)? $person->address[0]->zip :'Not Listed').'</li>';
     //phone number
     echo '<li class="list-group-item"><i class="fa fa-phone" aria-hidden="true"></i>
-&nbsp;Phone: '.(isset($person->phones[0])? call_phone($person->phones[0]) :'Not Listed').'</li>';
+&nbsp;Phone: &nbsp;'.(isset($person->phones[0])? call_phone($person->phones[0]) :'Not Listed').'</li>';
     //email, if any
-    echo ''.(isset($person->emails[0])? '<li class="list-group-item"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email: <a href="mailto:'.$person->emails[0].'">'.$person->emails[0].'</a></li>' :'').'';
+    echo ''.(isset($person->emails[0])? '<li class="list-group-item"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Email: &nbsp;<a href="mailto:'.$person->emails[0].'">'.$person->emails[0].'</a></li>' :'').'';
     //social media
     get_social($person);
     echo '</ul>';

@@ -27,6 +27,7 @@ $font-family-base:       $font-family-serif;
 $blue: #2196F3;
 $red: #f44336;
 $grey400: #bdbdbd;
+$grey200: #cfd8dc;
 $grey100: #eceff1;
 $grey: #eceff1;
 $jumbotron-padding: 7rem;
@@ -38,7 +39,7 @@ $padding: 100px;
 
 //Custom Backgrounds
 .bg-grey {
-  background-color: $grey100;
+  background-color: $grey200;
 }
 p {
   margin-bottom: 0rem !important;
@@ -82,9 +83,15 @@ p {
     column-count: 5;
   }
 } */
+.shadow1{
+  @include shadow(1);
+}
+.shadow2{
+  @include shadow(2);
+}
 .jumbotron {
   padding: $jumbotron-padding ($jumbotron-padding / 2) !important; 
-	background-image: url("./img/capitol.png");
+	background-image: url("./img/capitol_clear.png");
 	background-repeat: no-repeat;
   background-position: center;
   color: white;
@@ -115,13 +122,13 @@ footer {
 
 .card {
   transition:all 550ms;
-  @include shadow(1);
+  @include shadow(2);
   &:hover,&:focus {
-    @include shadow(3);
+    @include shadow(4);
     transform:translateY(-5px);
   }
   &:active {
-    @include shadow(2);
+    @include shadow(3);
     transform:translateY(-2px);
   }
 } 
